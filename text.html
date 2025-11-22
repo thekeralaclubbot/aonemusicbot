@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A One Music Bot</title>
+    <style>
+        /* --- CSS STYLES --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e5ddd5;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            height: 100%;
+        }
+
+        header {
+            background-color: #075e54;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #fff;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chat-window {
+            flex: 1;
+            padding: 20px;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-color: #e5ddd5;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            position: relative;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-msg {
+            background-color: #fff;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .user-msg {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .song-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .song-cover {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            background-color: #333;
+        }
+
+        .song-info {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 12px;
+        }
+
+        .play-btn {
+            background-color: #075e54;
+            color: white;
+        }
+
+        .download-btn {
+            background-color: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+            text-decoration: none;
+        }
+
+        .input-area {
+            padding: 10px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-box {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            outline: none;
+        }
+
+        .send-btn {
+            background-color: #075e54;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <img src="logo.jpg" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/40?text=Bot'">
+            <div class="title">A One Music Bot</div>
+        </header>
+
+        <div class="chat-window" id="chatWindow">
+            <div class="message bot-msg">Hi! Type song name.</div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="userInput" class="input-box" placeholder="Send Song name...">
+            <button id="sendBtn" class="send-btn">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Get Elements from HTML
+        const userInput = document.getElementById("userInput");
+        const sendBtn = document.getElementById("sendBtn");
+        const chatWindow = document.getElementById("chatWindow");
+        
+        // Global variables to manage the audio state
+        let currentAudio = null; 
+        let currentBtn = null;    
+
+        // 2. Function to handle sending message
+        function sendMessage() {
+            const text = userInput.value.trim();
+
+            if (text === "") return;
+
+            // --- Step A: Add USER Message ---
+            addMessage(text, 'user-msg');
+            
+            userInput.value = "";
+
+            // --- Step B: Bot Logic (Simulated) ---
+            setTimeout(() => {
+                // 1. ഒന്നാമത്തെ പാട്ട്: NERA
+                if (text.toLowerCase() === "nera") {
+                    addSongCard("Nera", "Nera.jpg");
+                } 
+                
+                // 2. രണ്ടാമത്തെ പാട്ട്: KUMKI (പുതിയത്)
+                else if (text.toLowerCase() === "kumki") {
+                    addSongCard("Kumki", "Kumki.jpg"); 
+                }
+                else if (text.toLowerCase() ==="salam") {
+                    addSongCard("salam","logo.jpg")
+                }
+                
+                // 3. മറ്റ് പാട്ടുകൾ ഇവിടെ else if ഉപയോഗിച്ച് ചേർക്കുക
+                /*
+                else if (text.toLowerCase() === "yoursong") {
+                    addSongCard("YourSong", "YourSong.jpg"); 
+                }
+                */
+                
+                // 4. മുകളിൽ പറഞ്ഞതൊന്നുമല്ലെങ്കിൽ, Searching message കാണിക്കുന്നു
+                else {
+                    addMessage("Not available " + text + "...", 'bot-msg');
+                }
+            }, 600);
+        }
+
+        // 3. Helper function to add text bubbles
+        function addMessage(text, className) {
+            const div = document.createElement("div");
+            div.classList.add("message", className);
+            div.innerText = text;
+            chatWindow.appendChild(div);
+            scrollToBottom();
+        }
+
+        // 4. Helper function to add the complex Song Card
+        function addSongCard(songName, imageName) {
+            const div = document.createElement("div");
+            div.classList.add("message", "bot-msg");
+            
+            const songUrl = `${songName}.mp3`;
+
+            div.innerHTML = `
+                <div class="song-card">
+                    <img src="${imageName}" class="song-cover" onerror="this.src='https://via.placeholder.com/200x150?text=No+Image'">
+                    <div class="song-info">Song Name: ${SongName}</div>
+                    <div class="controls">
+                        <button class="btn play-btn" onclick="toggleMusic('${songUrl}', this)">▶ Play</button>
+                        <a href="${songUrl}" download class="btn download-btn">⬇ Download</a>
+                    </div>
+                </div>
+            `;
+            
+            chatWindow.appendChild(div);
+            scrollToBottom();
+        }
+
+        /**
+         * Toggles the audio playback (Play/Pause) and manages the button state.
+         */
+        function toggleMusic(url, btnElement) {
+            const isSameSongPlaying = currentAudio && 
+                                      !currentAudio.paused && 
+                                      currentAudio.src === new URL(url, document.baseURI).href;
+
+            // 1. If the SAME song is currently playing, PAUSE it.
+            if (isSameSongPlaying) {
+                currentAudio.pause();
+                btnElement.innerHTML = "▶ Play";
+                return;
+            }
+
+            // 2. Stop and reset any currently loaded audio (to handle switching songs)
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            
+            // 3. Reset the previous button's text if a different song's button was active
+            if (currentBtn && currentBtn !== btnElement) {
+                currentBtn.innerHTML = "▶ Play";
+            }
+
+            // 4. Create and play the new audio
+            currentAudio = new Audio(url);
+            currentBtn = btnElement;
+
+            currentAudio.play()
+                .then(() => {
+                    btnElement.innerHTML = "⏸ Pause"; // Success: Change button to Pause
+                })
+                .catch(error => {
+                    console.error("Playback failed:", error);
+                    alert(`Error: Cannot play "${url}". Make sure the file exists.`);
+                    btnElement.innerHTML = "▶ Play"; // Reset on error
+                });
+
+            // 5. Set up event to reset button when song ends naturally
+            currentAudio.onended = function() {
+                btnElement.innerHTML = "▶ Play";
+                currentAudio = null;
+                currentBtn = null;
+            };
+        }
+
+        // 6. Helper to auto-scroll to bottom
+        function scrollToBottom() {
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // 7. Event Listeners
+        sendBtn.addEventListener("click", sendMessage);
+
+        userInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+    </script>
+
+</body>
+</html>
