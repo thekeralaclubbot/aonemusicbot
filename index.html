@@ -215,14 +215,17 @@
             setTimeout(() => {
                 // 1. ഒന്നാമത്തെ പാട്ട്: NERA
                 if (text.toLowerCase() === "nera") {
-                    addSongCard("Nera", "Nera.jpg");
+                    // NOTE: Ensure you have 'Nera.jpg' and 'Nera.mp3' files in the same directory
+                    addSongCard("Nera", "Nera.jpg"); 
                 } 
                 
                 // 2. രണ്ടാമത്തെ പാട്ട്: KUMKI (പുതിയത്)
                 else if (text.toLowerCase() === "kumki") {
+                    // NOTE: Ensure you have 'Kumki.jpg' and 'Kumki.mp3' files in the same directory
                     addSongCard("Kumki", "Kumki.jpg"); 
                 }
                 else if (text.toLowerCase() ==="salam") {
+                    // NOTE: Ensure you have 'salam.mp3' and 'logo.jpg' (or 'salam.jpg') files in the same directory
                     addSongCard("salam","logo.jpg")
                 }
                 
@@ -259,7 +262,7 @@
             div.innerHTML = `
                 <div class="song-card">
                     <img src="${imageName}" class="song-cover" onerror="this.src='https://via.placeholder.com/200x150?text=No+Image'">
-                    <div class="song-info">Song Name: ${SongName}</div>
+                    <div class="song-info">Song Name: **${songName}**</div>
                     <div class="controls">
                         <button class="btn play-btn" onclick="toggleMusic('${songUrl}', this)">▶ Play</button>
                         <a href="${songUrl}" download class="btn download-btn">⬇ Download</a>
