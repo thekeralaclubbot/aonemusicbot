@@ -247,7 +247,7 @@
                 
                 // 4. മുകളിൽ പറഞ്ഞതൊന്നുമല്ലെങ്കിൽ
                 else {
-                    addMessage(`Searching for "${text}"... Not available in the simple list.`, 'bot-msg');
+                    addMessage(`Searching for "${text}" Not available in the simple list.`, 'bot-msg');
                 }
             }, 600);
         }
@@ -272,7 +272,7 @@
             div.innerHTML = `
                 <div class="song-card">
                     <img src="${imageName}" class="song-cover" onerror="this.src='https://via.placeholder.com/200x150?text=No+Image'">
-                    <div class="song-info">Song Name: **${displayName}**</div>
+                    <div class="song-info">Song Name: ${displayName}</div>
                     <div class="controls">
                         <button class="btn play-btn" onclick="toggleMusic('${songUrl}', this)">▶ Play</button>
                         <a href="${songUrl}" download="${displayName}.mp3" class="btn download-btn">⬇ Download</a>
