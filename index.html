@@ -196,7 +196,7 @@
         </header>
 
         <div class="chat-window" id="chatWindow">
-            <div class="message bot-msg">Hi! Type song name.</div>
+            <div class="message bot-msg">Hi! Type song name. (e.g., Nera, Salam, Shariya)</div>
         </div>
         
         <div class="input-area">
@@ -215,6 +215,19 @@
         let currentAudio = null; 
         let currentBtn = null;    
 
+        /**
+         * Song Data Structure for better management
+         * Format: { inputKeyword: { displayName: "Display Name", imageName: "image.jpg", audioFileName: "audio.mp3" } }
+         */
+        const songData = {
+            "nera": { displayName: "Nera", imageName: "Nera.jpg", audioFileName: "Nera.mp3" },
+            "mhr munthirichar": { displayName: "Mhr Munthirichar", imageName: "mhr_munthirichar.jpg", audioFileName: "mhr_munthirichar.mp3" },
+            "salam": { displayName: "Salam", imageName: "salam.jpg", audioFileName: "Salam.mp3" },
+            "shariya": { displayName: "Shariya", imageName: "Shariya.jpg", audioFileName: "Shariya.mp3" }, 
+            "hope": { displayName: "Hope Song", imageName: "hope.jpg", audioFileName: "Hope_Song.mp3" }, 
+            "ilakozhiye": { displayName: "Ilakozhiye", imageName: "Ilakozhiye.jpg", audioFileName: "Ilakozhiye.mp3" } 
+        };
+
         // 2. Function to handle sending message
         function sendMessage() {
             const text = userInput.value.trim();
@@ -230,33 +243,16 @@
             setTimeout(() => {
                 const lowerText = text.toLowerCase();
                 
-                // 1. ഒന്നാമത്തെ പാട്ട്: NERA
-                if (lowerText === "nera") {
-                    addSongCard("Nera", "Nera.jpg", "Nera.mp3"); 
+                // Check if the input matches any keyword in the songData object
+                const song = songData[lowerText];
+
+                if (song) {
+                    // Send the descriptive title and the actual file names to the card generator
+                    addSongCard(song.displayName, song.imageName, song.audioFileName);
                 } 
-                
-                // 2. രണ്ടാമത്തെ പാട്ട്: mhr_munthirichar
-                else if (lowerText === "Mhr munthirichar") {
-                    addSongCard("mhr_muntirichar", "mhr_munthirichar.jpg", "mhr_munthirichar.mp3"); 
-                }
-                
-                // 3. മൂന്നാമത്തെ പാട്ട്: Salam
-                else if (lowerText === "salam") {
-                    addSongCard("Salam", "salam.jpg", "Salam.mp3");
-                }
-                    if (lowerText === "Shariya") {
-                    addSongCard("Shariya", "Shariya.jpg", "Nera.mp3"); 
-                }
-                        if (lowerText === "Hope") {
-                    addSongCard("hope.song", "hope.jpg", "Nera.mp3"); 
-                }
-                            if (lowerText === "Ilakozhiye") {
-                    addSongCard("Ilakozhiye", "Ilakozhiye.jpg", "Nera.mp3"); 
-                } 
-                
-                // 4. മുകളിൽ പറഞ്ഞതൊന്നുമല്ലെങ്കിൽ
+                // If no song is found
                 else {
-                    addMessage(`Searching for "${text}" Not available in the simple list.`, 'bot-msg');
+                    addMessage(`❌ Sorry, the song "${text}" is not found in the list. Please try: ${Object.keys(songData).join(', ')}.`, 'bot-msg');
                 }
             }, 600);
         }
@@ -270,21 +266,21 @@
             scrollToBottom();
         }
 
-        // 4. Helper function to add the complex Song Card (Function signature updated for clarity)
+        // 4. Helper function to add the complex Song Card
         function addSongCard(displayName, imageName, audioFileName) {
             const div = document.createElement("div");
             div.classList.add("message", "bot-msg");
             
-            // Note: The audio URL uses the actual filename
+            // audioFileName is used here as the URL source (songUrl)
             const songUrl = audioFileName; 
 
             div.innerHTML = `
                 <div class="song-card">
                     <img src="${imageName}" class="song-cover" onerror="this.src='https://via.placeholder.com/200x150?text=No+Image'">
-                    <div class="song-info">Song Name: ${displayName}</div>
+                    <div class="song-info">🎵 **${displayName}**</div>
                     <div class="controls">
                         <button class="btn play-btn" onclick="toggleMusic('${songUrl}', this)">▶ Play</button>
-                        <a href="${songUrl}" download="${displayName}.mp3" class="btn download-btn">⬇ Download</a>
+                        <a href="${songUrl}" download="${displayName.replace(/\s/g, '_')}.mp3" class="btn download-btn">⬇ Download</a>
                     </div>
                 </div>
             `;
