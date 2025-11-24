@@ -13,7 +13,8 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            height: 100vh;
+            /* കീബോർഡ് വരുമ്പോൾ വിൻഡോയുടെ വലുപ്പം മാറുന്നത് തടയാൻ */
+            height: 100vh; 
         }
 
         .app-container {
@@ -34,6 +35,10 @@
             align-items: center;
             gap: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            /* ഹെഡർ ഫിക്സ് ചെയ്യുന്നു */
+            position: sticky; 
+            top: 0;
+            z-index: 10;
         }
 
         .logo {
@@ -59,6 +64,8 @@
             flex-direction: column;
             gap: 15px;
             scroll-behavior: smooth;
+            /* ⚠️ പ്രധാന അപ്‌ഡേറ്റ്: ഇൻപുട്ട് ഏരിയയ്ക്ക് വേണ്ടി പാഡിംഗ് നൽകുന്നു */
+            padding-bottom: 70px; 
         }
 
         .message {
@@ -129,6 +136,7 @@
             justify-content: center;
             gap: 5px;
             font-size: 12px;
+            text-decoration: none; /* Download button സ്റ്റൈലിനായി */
         }
 
         .play-btn {
@@ -140,15 +148,21 @@
             background-color: #eee;
             color: #333;
             border: 1px solid #ccc;
-            text-decoration: none;
         }
 
+        /* ⚠️ പ്രധാന അപ്‌ഡേറ്റ്: ഇൻപുട്ട് ഏരിയയെ അടിയിൽ ഫിക്സ് ചെയ്യുന്നു */
         .input-area {
+            position: fixed; 
+            bottom: 0;
+            width: 100%;
+            max-width: 400px; /* app-container-മായി മാച്ച് ചെയ്യുന്നു */
             padding: 10px;
             background-color: #f0f0f0;
             display: flex;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1); 
+            z-index: 10;
         }
 
         .input-box {
@@ -184,7 +198,7 @@
         <div class="chat-window" id="chatWindow">
             <div class="message bot-msg">Hi! Type song name.</div>
         </div>
-
+        
         <div class="input-area">
             <input type="text" id="userInput" class="input-box" placeholder="Send Song name...">
             <button id="sendBtn" class="send-btn">➤</button>
@@ -214,32 +228,26 @@
 
             // --- Step B: Bot Logic (Simulated) ---
             setTimeout(() => {
+                const lowerText = text.toLowerCase();
+                
                 // 1. ഒന്നാമത്തെ പാട്ട്: NERA
-                if (text.toLowerCase() === "nera") {
-                    // NOTE: Ensure you have 'Nera.jpg' and 'Nera.mp3' files in the same directory
-                    addSongCard("Nera", "Nera.jpg"); 
+                if (lowerText === "nera") {
+                    addSongCard("Nera", "Nera.jpg", "Nera.mp3"); 
                 } 
                 
-                // 2. രണ്ടാമത്തെ പാട്ട്: KUMKI (പുതിയത്)
-                else if (text.toLowerCase() === "mhr_munthirichar") {
-                    // NOTE: Ensure you have 'mhr_munthirichar.jpg' and 'Kumki.mp3' files in the same directory
-                    addSongCard("mhr_munthirichar", "mhr_munthirichar.jpg"); 
-                }
-                else if (text.toLowerCase() ==="Salam") {
-                    // NOTE: Ensure you have 'salam.mp3' and 'logo.jpg' (or 'salam.jpg') files in the same directory
-                    addSongCard("salam","salam.jpg")
+                // 2. രണ്ടാമത്തെ പാട്ട്: mhr_munthirichar
+                else if (lowerText === "mhr_munthirichar") {
+                    addSongCard("MHR Muntirichar", "mhr_munthirichar.jpg", "mhr_munthirichar.mp3"); 
                 }
                 
-                // 3. മറ്റ് പാട്ടുകൾ ഇവിടെ else if ഉപയോഗിച്ച് ചേർക്കുക
-                /*
-                else if (text.toLowerCase() === "yoursong") {
-                    addSongCard("YourSong", "YourSong.jpg"); 
+                // 3. മൂന്നാമത്തെ പാട്ട്: Salam
+                else if (lowerText === "salam") {
+                    addSongCard("Salam", "salam.jpg", "Salam.mp3");
                 }
-                */
                 
-                // 4. മുകളിൽ പറഞ്ഞതൊന്നുമല്ലെങ്കിൽ, Searching message കാണിക്കുന്നു
+                // 4. മുകളിൽ പറഞ്ഞതൊന്നുമല്ലെങ്കിൽ
                 else {
-                    addMessage("Not available " + text + "...", 'bot-msg');
+                    addMessage(`Searching for "${text}"... Not available in the simple list.`, 'bot-msg');
                 }
             }, 600);
         }
@@ -253,20 +261,21 @@
             scrollToBottom();
         }
 
-        // 4. Helper function to add the complex Song Card
-        function addSongCard(songName, imageName) {
+        // 4. Helper function to add the complex Song Card (Function signature updated for clarity)
+        function addSongCard(displayName, imageName, audioFileName) {
             const div = document.createElement("div");
             div.classList.add("message", "bot-msg");
             
-            const songUrl = `${songName}.mp3`;
+            // Note: The audio URL uses the actual filename
+            const songUrl = audioFileName; 
 
             div.innerHTML = `
                 <div class="song-card">
                     <img src="${imageName}" class="song-cover" onerror="this.src='https://via.placeholder.com/200x150?text=No+Image'">
-                    <div class="song-info">Song Name: **${songName}**</div>
+                    <div class="song-info">Song Name: **${displayName}**</div>
                     <div class="controls">
                         <button class="btn play-btn" onclick="toggleMusic('${songUrl}', this)">▶ Play</button>
-                        <a href="${songUrl}" download class="btn download-btn">⬇ Download</a>
+                        <a href="${songUrl}" download="${displayName}.mp3" class="btn download-btn">⬇ Download</a>
                     </div>
                 </div>
             `;
@@ -279,9 +288,12 @@
          * Toggles the audio playback (Play/Pause) and manages the button state.
          */
         function toggleMusic(url, btnElement) {
+            const newUrl = new URL(url, document.baseURI).href; // Get absolute URL for comparison
+
+            // Check if the same song is playing
             const isSameSongPlaying = currentAudio && 
                                       !currentAudio.paused && 
-                                      currentAudio.src === new URL(url, document.baseURI).href;
+                                      currentAudio.src === newUrl;
 
             // 1. If the SAME song is currently playing, PAUSE it.
             if (isSameSongPlaying) {
@@ -310,9 +322,11 @@
                     btnElement.innerHTML = "⏸ Pause"; // Success: Change button to Pause
                 })
                 .catch(error => {
-                    console.error("Playback failed:", error);
-                    alert(`Error: Cannot play "${url}". Make sure the file exists.`);
+                    console.error("Playback failed for:", url, error);
+                    alert(`Error: Cannot play "${url}". Make sure the file exists in the correct location.`);
                     btnElement.innerHTML = "▶ Play"; // Reset on error
+                    currentAudio = null;
+                    currentBtn = null;
                 });
 
             // 5. Set up event to reset button when song ends naturally
@@ -336,6 +350,9 @@
                 sendMessage();
             }
         });
+        
+        // Initial scroll to bottom (important for fixed input)
+        window.addEventListener('load', scrollToBottom);
 
     </script>
 
