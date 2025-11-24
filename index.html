@@ -197,7 +197,7 @@
 
         <div class="chat-window" id="chatWindow">
             <div class="message bot-msg">type song name correct.
-                Check out our Instagram! <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="color: #075e54; text-decoration: none; font-weight: bold;">@a.one.code.official</a>  available songs:-  1.Salam, 2.Shariya, 3.mhr munthirichar, 4.nera, 5.Ilakozhiye,6.jaalakaari,7.hope, 8.kaadhal ponmaan</div>
+                Check out our Instagram! <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="color: #075e54; text-decoration: none; font-weight: bold;">@a.one.code.official</a>  available songs:-  1.Salam, 2.Shariya, 3.mhr munthirichar, 4.nera, 5.Ilakozhiye,6.jaalakaari,7.hope, 8.kaadhal ponmaan (Try typing a few letters!)</div>
             </div>
         
         <div class="input-area">
@@ -218,7 +218,6 @@
 
         /**
          * Song Data Structure for better management
-         * Format: { inputKeyword: { displayName: "Display Name", imageName: "image.jpg", audioFileName: "audio.mp3" } }
          */
         const songData = {
             "nera": { displayName: "Nera", imageName: "Nera.jpg", audioFileName: "Nera.mp3" },
@@ -230,6 +229,34 @@
             "jaalakaari": { displayName: "jaalakaari", imageName: "jaalakaari.jpg", audioFileName: "jaalakaari.mp3"},
             "kaadhal ponmaan": { displayName: "Kaadhal Ponmaan", imageName: "kaadhal_ponmaan.jpg", audioFileName: "kaadhal_ponmaan.mp3"},
         };
+        
+        /**
+         * Custom, simplified similarity check function. 
+         * This estimates similarity by comparing the number of matching initial characters 
+         * against the length of the longer string.
+         */
+        function calculateSimilarity(str1, str2) {
+            if (!str1 || !str2) return 0;
+
+            const len1 = str1.length;
+            const len2 = str2.length;
+            const maxLen = Math.max(len1, len2);
+            
+            // Exact match returns full similarity
+            if (str1 === str2) return 1.0; 
+
+            // Count characters that match at the same position (prefix match is strong)
+            let correctChars = 0;
+            for (let i = 0; i < Math.min(len1, len2); i++) {
+                if (str1[i] === str2[i]) {
+                    correctChars++;
+                }
+            }
+            
+            // Simple metric: proportion of matching prefix characters relative to max length
+            return correctChars / maxLen; 
+        }
+
 
         // 2. Function to handle sending message
         function sendMessage() {
@@ -242,20 +269,40 @@
             
             userInput.value = "";
 
-            // --- Step B: Bot Logic (Simulated) ---
+            // --- Step B: Bot Logic (Fuzzy Match) ---
             setTimeout(() => {
                 const lowerText = text.toLowerCase();
                 
-                // Check if the input matches any keyword in the songData object
-                const song = songData[lowerText];
+                let bestMatchKeyword = null;
+                let bestMatchSong = null;
+                let highestSimilarity = 0;
+                
+                // 🛑 Set the threshold for "10% correct"
+                const SIMILARITY_THRESHOLD = 0.10; 
 
-                if (song) {
-                    // Send the descriptive title and the actual file names to the card generator
-                    addSongCard(song.displayName, song.imageName, song.audioFileName);
+                // 1. Iterate over all available song keywords
+                for (const keyword in songData) {
+                    const similarity = calculateSimilarity(lowerText, keyword);
+
+                    if (similarity > highestSimilarity) {
+                        highestSimilarity = similarity;
+                        bestMatchKeyword = keyword;
+                        bestMatchSong = songData[keyword];
+                    }
+                }
+
+                // 2. Check if the best match meets the 10% threshold
+                if (bestMatchSong && highestSimilarity >= SIMILARITY_THRESHOLD) {
+                    // Send message indicating the match found
+                    const similarityPercentage = (highestSimilarity * 100).toFixed(0);
+                    addMessage(`✅ Found best match (${similarityPercentage}%): **${bestMatchKeyword}**`, 'bot-msg');
+                    
+                    // Send the song card
+                    addSongCard(bestMatchSong.displayName, bestMatchSong.imageName, bestMatchSong.audioFileName);
                 } 
-                // If no song is found
+                // If no song is found above the threshold
                 else {
-                    addMessage(`❌ Sorry, the song "${text}" is not found in the list. Please try: ${Object.keys(songData).join(', ')}.`, 'bot-msg');
+                    addMessage(`❌ Sorry, the song "${text}" is not found (Similarity: ${(highestSimilarity * 100).toFixed(0)}%). Please try: ${Object.keys(songData).join(', ')}.`, 'bot-msg');
                 }
             }, 600);
         }
@@ -264,7 +311,7 @@
         function addMessage(text, className) {
             const div = document.createElement("div");
             div.classList.add("message", className);
-            div.innerText = text;
+            div.innerHTML = text; // Use innerHTML to allow for bolding (like **song**)
             chatWindow.appendChild(div);
             scrollToBottom();
         }
