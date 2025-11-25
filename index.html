@@ -188,6 +188,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 18px; /* ബട്ടൺ ടെക്സ്റ്റ്/ഐക്കൺ സൈസ് */
         }
     </style>
 </head>
@@ -200,11 +201,14 @@
         </header>
 
         <div class="chat-window" id="chatWindow">
-            <div class="message bot-msg">type song name correct.
-                Check out our Instagram! <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="color: #075e54; text-decoration: none; font-weight: bold;">A One Code official</a>  available songs:-  1.Salam, 2.Shariya, 3.mhr munthirichar, 4.nera, 5.Ilakozhiye,6.jaalakaari,7.hope, 8.kaadhal ponmaan (Try typing a few letters!)</div>
+            <div class="message bot-msg">
+                Check out our Instagram! <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="color: #075e54; text-decoration: none; font-weight: bold;">A One Code official</a>  (Click ➕ to see all available songs)
             </div>
+        </div>
         
         <div class="input-area">
+            <button id="showSongsBtn" class="send-btn">➕</button> 
+            
             <input type="text" id="userInput" class="input-box" placeholder="Send Song name...">
             <button id="sendBtn" class="send-btn">➤</button>
         </div>
@@ -218,13 +222,13 @@
         const userInput = document.getElementById("userInput");
         const sendBtn = document.getElementById("sendBtn");
         const chatWindow = document.getElementById("chatWindow");
+        const showSongsBtn = document.getElementById("showSongsBtn"); 
         
         let currentAudio = null; 
         let currentBtn = null;    
 
         /**
          * ലഭ്യമായ പാട്ടുകളുടെ ഡാറ്റാബേസ്. 
-         * കീ (key) ആണ് സെർച്ച് ചെയ്യാൻ ഉപയോഗിക്കുന്നത്.
          */
         const songData = {
             "nera": { displayName: "Nera", imageName: "Nera.jpg", audioFileName: "Nera.mp3" },
@@ -239,12 +243,11 @@
             "kozhipunk": { displayName: "Kozhipunk", imageName: "kozhipunk.jpg", audioFileName: "kozhipunk.mp3"},
             "madhuramoorunna": { displayName: "Madhuramoorunna", imageName: "madhuramoorunna.jpg", audioFileName: "madhuramoorunna.mp3"},
             "maine pyar kiya": { displayName: "Maine Pyar Kiya", imageName: "maine.jpg", audioFileName: "maine-pyar-kiya.mp3"},
-            "Naalo Unna Parema Nantha": { displayName: "Naalo Unna Parema Nantha", imageName: "naalo.jpg", audioFileName: "naalo-unna-parema-nantha.mp3"},
+            "naalo unna parema nantha": { displayName: "Naalo Unna Parema Nantha", imageName: "naalo.jpg", audioFileName: "naalo-unna-parema-nantha.mp3"},
         };
         
         /**
          * രണ്ട് സ്ട്രിങ്ങുകൾ തമ്മിലുള്ള സാമ്യം (Similarity) കണക്കാക്കുന്നു.
-         * 10% (0.10) ആണ് ത്രെഷോൾഡ്.
          */
         function calculateSimilarity(str1, str2) {
             if (!str1 || !str2) return 0;
@@ -253,19 +256,15 @@
             const len2 = str2.length;
             const maxLen = Math.max(len1, len2);
             
-            // കൃത്യമായ മാച്ച് ആണെങ്കിൽ 1.0
             if (str1 === str2) return 1.0; 
 
-            // ഒരേ സ്ഥാനത്തുള്ള അക്ഷരങ്ങളുടെ എണ്ണം
             let correctChars = 0;
             for (let i = 0; i < Math.min(len1, len2); i++) {
-                // ഇവിടെ കേസ് സെൻസിറ്റിവിറ്റി ഒഴിവാക്കാൻ toLowerCase() ഉപയോഗിക്കാം
                 if (str1.toLowerCase()[i] === str2.toLowerCase()[i]) {
                     correctChars++;
                 }
             }
             
-            // സാമ്യം കണ്ടെത്താനുള്ള ഫോർമുല:
             return correctChars / maxLen; 
         }
 
@@ -314,7 +313,7 @@
                 } 
                 // മാച്ച് കണ്ടെത്തിയില്ലെങ്കിൽ
                 else {
-                    addMessage(`❌ Sorry, the song "${text}" is not found (Similarity: ${(highestSimilarity * 100).toFixed(0)}%). Please try: ${Object.keys(songData).join(', ')}.`, 'bot-msg');
+                    addMessage(`❌ Sorry, the song "${text}" is not found (Similarity: ${(highestSimilarity * 100).toFixed(0)}%). Please try again or click ➕ for the list.`, 'bot-msg');
                 }
             }, 600);
         }
@@ -352,7 +351,6 @@
 
         /**
          * പ്ലേ/പോസ് ടോഗിൾ ചെയ്യുന്ന ഫംഗ്ഷൻ.
-         * ഇത് ഗ്ലോബൽ സ്കോപ്പിൽ ഉള്ളതുകൊണ്ട് onclick-ൽ നിന്നും നേരിട്ട് വിളിക്കാം.
          */
         function toggleMusic(url, btnElement) {
             const newUrl = new URL(url, document.baseURI).href; 
@@ -403,6 +401,17 @@
             };
         }
 
+        // Available Songs ലിസ്റ്റ് ചെയ്യുന്ന ഫംഗ്ഷൻ
+        function listAllSongs() {
+            const songList = Object.keys(songData)
+                .map((key, index) => `${index + 1}. **${songData[key].displayName}** (Type: *${key}*)`)
+                .join('<br>'); // ഓരോ പാട്ടും പുതിയ ലൈനിൽ വരാൻ
+            
+            // ബോട്ട് മെസ്സേജ് ആയി ലിസ്റ്റ് ചേർക്കുന്നു
+            addMessage(`**Available Songs** (${Object.keys(songData).length} total):<br>${songList}`, 'bot-msg');
+        }
+
+
         // ചാറ്റ് വിൻഡോ അടിയിലേക്ക് സ്ക്രോൾ ചെയ്യാൻ
         function scrollToBottom() {
             chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -410,6 +419,7 @@
 
         // ഇവന്റ് ലിസണറുകൾ
         sendBtn.addEventListener("click", sendMessage);
+        showSongsBtn.addEventListener("click", listAllSongs); // പുതിയ ബട്ടണിനായുള്ള ലിസണർ
 
         userInput.addEventListener("keypress", function (e) {
             if (e.key === "Enter") {
