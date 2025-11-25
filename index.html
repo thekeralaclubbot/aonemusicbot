@@ -404,7 +404,7 @@
         // Available Songs ലിസ്റ്റ് ചെയ്യുന്ന ഫംഗ്ഷൻ
         function listAllSongs() {
             const songList = Object.keys(songData)
-                .map((key, index) => `${index + 1}. **${songData[key].displayName}** (Type: *${key}*)`)
+                .map((key, index) => `${index + 1}. ${songData[key].displayName} (Type: ${key})`)
                 .join('<br>'); // ഓരോ പാട്ടും പുതിയ ലൈനിൽ വരാൻ
             
             // ബോട്ട് മെസ്സേജ് ആയി ലിസ്റ്റ് ചേർക്കുന്നു
