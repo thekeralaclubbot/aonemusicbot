@@ -6,7 +6,10 @@
     <title>A One Music Bot | free song play and download bot</title>
     <link rel="icon" href="logo.jpg" type="image/jpeg">
     <style>
-        /* --- CSS STYLES --- */
+        /* ========================================
+        --- CSS STYLES --- 
+        ========================================
+        */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #e5ddd5;
@@ -57,14 +60,15 @@
         .chat-window {
             flex: 1;
             padding: 20px;
+            /* വാട്ട്‌സ്ആപ്പ് ബാക്ക്ഗ്രൗണ്ട് ഇമേജ് */
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-           background-color: #e5ddd5;
+            background-color: #e5ddd5;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 15px;
             scroll-behavior: smooth;
-            /* ⚠️ പ്രധാന അപ്‌ഡേറ്റ്: ഇൻപുട്ട് ഏരിയയ്ക്ക് വേണ്ടി പാഡിംഗ് നൽകുന്നു */
+            /* ഇൻപുട്ട് ഏരിയയ്ക്ക് വേണ്ടി പാഡിംഗ് നൽകുന്നു */
             padding-bottom: 70px; 
         }
 
@@ -136,7 +140,7 @@
             justify-content: center;
             gap: 5px;
             font-size: 12px;
-            text-decoration: none; /* Download button സ്റ്റൈലിനായി */
+            text-decoration: none;
         }
 
         .play-btn {
@@ -150,7 +154,7 @@
             border: 1px solid #ccc;
         }
 
-        /* ⚠️ പ്രധാന അപ്‌ഡേറ്റ്: ഇൻപുട്ട് ഏരിയയെ അടിയിൽ ഫിക്സ് ചെയ്യുന്നു */
+        /* ഇൻപുട്ട് ഏരിയയെ അടിയിൽ ഫിക്സ് ചെയ്യുന്നു */
         .input-area {
             position: fixed; 
             bottom: 0;
@@ -207,17 +211,20 @@
     </div>
 
     <script>
-        // 1. Get Elements from HTML
+        /* ========================================
+        --- JAVASCRIPT LOGIC --- 
+        ========================================
+        */
         const userInput = document.getElementById("userInput");
         const sendBtn = document.getElementById("sendBtn");
         const chatWindow = document.getElementById("chatWindow");
         
-        // Global variables to manage the audio state
         let currentAudio = null; 
         let currentBtn = null;    
 
         /**
-         * Song Data Structure for better management
+         * ലഭ്യമായ പാട്ടുകളുടെ ഡാറ്റാബേസ്. 
+         * കീ (key) ആണ് സെർച്ച് ചെയ്യാൻ ഉപയോഗിക്കുന്നത്.
          */
         const songData = {
             "nera": { displayName: "Nera", imageName: "Nera.jpg", audioFileName: "Nera.mp3" },
@@ -226,7 +233,7 @@
             "shariya": { displayName: "Shariya", imageName: "Shariya.jpg", audioFileName: "Shariya.mp3" }, 
             "hope": { displayName: "Hope Song", imageName: "hope.jpg", audioFileName: "hope_song.mp3" }, 
             "ilakozhiye": { displayName: "Ilakozhiye", imageName: "Ilakozhiye.jpg", audioFileName: "Ilakozhiye.mp3"},
-            "jaalakaari": { displayName: "jaalakaari", imageName: "jaalakaari.jpg", audioFileName: "jaalakaari.mp3"},
+            "jaalakaari": { displayName: "Jaalakaari", imageName: "jaalakaari.jpg", audioFileName: "jaalakaari.mp3"},
             "kaadhal ponmaan": { displayName: "Kaadhal Ponmaan", imageName: "kaadhal_ponmaan.jpg", audioFileName: "kaadhal_ponmaan.mp3"},
             "kannukulla": { displayName: "Kannukulla", imageName: "kannukulla.jpg", audioFileName: "kannukulla.mp3"},
             "kozhipunk": { displayName: "Kozhipunk", imageName: "kozhipunk.jpg", audioFileName: "kozhipunk.mp3"},
@@ -236,9 +243,8 @@
         };
         
         /**
-         * Custom, simplified similarity check function. 
-         * This estimates similarity by comparing the number of matching initial characters 
-         * against the length of the longer string.
+         * രണ്ട് സ്ട്രിങ്ങുകൾ തമ്മിലുള്ള സാമ്യം (Similarity) കണക്കാക്കുന്നു.
+         * 10% (0.10) ആണ് ത്രെഷോൾഡ്.
          */
         function calculateSimilarity(str1, str2) {
             if (!str1 || !str2) return 0;
@@ -247,34 +253,35 @@
             const len2 = str2.length;
             const maxLen = Math.max(len1, len2);
             
-            // Exact match returns full similarity
+            // കൃത്യമായ മാച്ച് ആണെങ്കിൽ 1.0
             if (str1 === str2) return 1.0; 
 
-            // Count characters that match at the same position (prefix match is strong)
+            // ഒരേ സ്ഥാനത്തുള്ള അക്ഷരങ്ങളുടെ എണ്ണം
             let correctChars = 0;
             for (let i = 0; i < Math.min(len1, len2); i++) {
-                if (str1[i] === str2[i]) {
+                // ഇവിടെ കേസ് സെൻസിറ്റിവിറ്റി ഒഴിവാക്കാൻ toLowerCase() ഉപയോഗിക്കാം
+                if (str1.toLowerCase()[i] === str2.toLowerCase()[i]) {
                     correctChars++;
                 }
             }
             
-            // Simple metric: proportion of matching prefix characters relative to max length
+            // സാമ്യം കണ്ടെത്താനുള്ള ഫോർമുല:
             return correctChars / maxLen; 
         }
 
 
-        // 2. Function to handle sending message
+        // സന്ദേശം അയക്കുന്ന ഫംഗ്ഷൻ
         function sendMessage() {
             const text = userInput.value.trim();
 
             if (text === "") return;
 
-            // --- Step A: Add USER Message ---
+            // 1. ഉപയോക്താവിന്റെ സന്ദേശം ചേർക്കുന്നു
             addMessage(text, 'user-msg');
             
             userInput.value = "";
 
-            // --- Step B: Bot Logic (Fuzzy Match) ---
+            // 2. ബോട്ട് ലോജിക് 
             setTimeout(() => {
                 const lowerText = text.toLowerCase();
                 
@@ -282,10 +289,10 @@
                 let bestMatchSong = null;
                 let highestSimilarity = 0;
                 
-                // 🛑 Set the threshold for "10% correct"
+                // 🛑 10% സിമിലാരിറ്റി ത്രെഷോൾഡ്
                 const SIMILARITY_THRESHOLD = 0.10; 
 
-                // 1. Iterate over all available song keywords
+                // ലഭ്യമായ എല്ലാ പാട്ടുകളിലും തിരയുന്നു
                 for (const keyword in songData) {
                     const similarity = calculateSimilarity(lowerText, keyword);
 
@@ -296,37 +303,36 @@
                     }
                 }
 
-                // 2. Check if the best match meets the 10% threshold
+                // 3. ത്രെഷോൾഡ് ചെക്ക് ചെയ്യുന്നു
                 if (bestMatchSong && highestSimilarity >= SIMILARITY_THRESHOLD) {
-                    // Send message indicating the match found
+                    // മാച്ച് കണ്ടെത്തിയാൽ
                     const similarityPercentage = (highestSimilarity * 100).toFixed(0);
-                    addMessage(`✅ Found best match (${similarityPercentage}%): **${bestMatchKeyword}**`, 'bot-msg');
+                    addMessage(`✅ Found best match (${similarityPercentage}%): **${bestMatchSong.displayName}**`, 'bot-msg');
                     
-                    // Send the song card
+                    // സോങ് കാർഡ് അയക്കുന്നു
                     addSongCard(bestMatchSong.displayName, bestMatchSong.imageName, bestMatchSong.audioFileName);
                 } 
-                // If no song is found above the threshold
+                // മാച്ച് കണ്ടെത്തിയില്ലെങ്കിൽ
                 else {
                     addMessage(`❌ Sorry, the song "${text}" is not found (Similarity: ${(highestSimilarity * 100).toFixed(0)}%). Please try: ${Object.keys(songData).join(', ')}.`, 'bot-msg');
                 }
             }, 600);
         }
 
-        // 3. Helper function to add text bubbles
+        // ടെക്സ്റ്റ് സന്ദേശം ചേർക്കാൻ
         function addMessage(text, className) {
             const div = document.createElement("div");
             div.classList.add("message", className);
-            div.innerHTML = text; // Use innerHTML to allow for bolding (like **song**)
+            div.innerHTML = text; 
             chatWindow.appendChild(div);
             scrollToBottom();
         }
         
-        // 4. Helper function to add the complex Song Card
+        // സോങ് കാർഡ് ചേർക്കാൻ
         function addSongCard(displayName, imageName, audioFileName) {
             const div = document.createElement("div");
             div.classList.add("message", "bot-msg");
             
-            // audioFileName is used here as the URL source (songUrl)
             const songUrl = audioFileName; 
 
             div.innerHTML = `
@@ -345,51 +351,51 @@
         }
 
         /**
-         * Toggles the audio playback (Play/Pause) and manages the button state.
+         * പ്ലേ/പോസ് ടോഗിൾ ചെയ്യുന്ന ഫംഗ്ഷൻ.
+         * ഇത് ഗ്ലോബൽ സ്കോപ്പിൽ ഉള്ളതുകൊണ്ട് onclick-ൽ നിന്നും നേരിട്ട് വിളിക്കാം.
          */
         function toggleMusic(url, btnElement) {
-            const newUrl = new URL(url, document.baseURI).href; // Get absolute URL for comparison
+            const newUrl = new URL(url, document.baseURI).href; 
 
-            // Check if the same song is playing
+            // 1. ഒരേ പാട്ടാണ് പ്ലേ ചെയ്യുന്നതെങ്കിൽ, പോസ് ചെയ്യുന്നു
             const isSameSongPlaying = currentAudio && 
                                       !currentAudio.paused && 
                                       currentAudio.src === newUrl;
 
-            // 1. If the SAME song is currently playing, PAUSE it.
             if (isSameSongPlaying) {
                 currentAudio.pause();
                 btnElement.innerHTML = "▶ Play";
                 return;
             }
 
-            // 2. Stop and reset any currently loaded audio (to handle switching songs)
+            // 2. നിലവിൽ പ്ലേ ചെയ്യുന്ന ഓഡിയോ നിർത്തുന്നു
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
             }
             
-            // 3. Reset the previous button's text if a different song's button was active
+            // 3. മുൻപ് ആക്ടീവ് ആയിരുന്ന ബട്ടണിന്റെ ടെക്സ്റ്റ് റീസെറ്റ് ചെയ്യുന്നു
             if (currentBtn && currentBtn !== btnElement) {
                 currentBtn.innerHTML = "▶ Play";
             }
 
-            // 4. Create and play the new audio
+            // 4. പുതിയ ഓഡിയോ പ്ലേ ചെയ്യുന്നു
             currentAudio = new Audio(url);
             currentBtn = btnElement;
 
             currentAudio.play()
                 .then(() => {
-                    btnElement.innerHTML = "⏸ Pause"; // Success: Change button to Pause
+                    btnElement.innerHTML = "⏸ Pause"; // പ്ലേ ചെയ്യാൻ കഴിഞ്ഞാൽ പോസ് ആക്കുന്നു
                 })
                 .catch(error => {
                     console.error("Playback failed for:", url, error);
-                    alert(`Error: Cannot play "${url}". Make sure the file exists in the correct location.`);
-                    btnElement.innerHTML = "▶ Play"; // Reset on error
+                    alert(`Error: Cannot play "${url}". Make sure the file exists.`);
+                    btnElement.innerHTML = "▶ Play"; // എറർ വന്നാൽ റീസെറ്റ് ചെയ്യുന്നു
                     currentAudio = null;
                     currentBtn = null;
                 });
 
-            // 5. Set up event to reset button when song ends naturally
+            // 5. പാട്ട് കഴിഞ്ഞാൽ ബട്ടൺ റീസെറ്റ് ചെയ്യാൻ
             currentAudio.onended = function() {
                 btnElement.innerHTML = "▶ Play";
                 currentAudio = null;
@@ -397,12 +403,12 @@
             };
         }
 
-        // 6. Helper to auto-scroll to bottom
+        // ചാറ്റ് വിൻഡോ അടിയിലേക്ക് സ്ക്രോൾ ചെയ്യാൻ
         function scrollToBottom() {
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
-        // 7. Event Listeners
+        // ഇവന്റ് ലിസണറുകൾ
         sendBtn.addEventListener("click", sendMessage);
 
         userInput.addEventListener("keypress", function (e) {
@@ -411,7 +417,7 @@
             }
         });
         
-        // Initial scroll to bottom (important for fixed input)
+        // പേജ് ലോഡ് ചെയ്യുമ്പോൾ താഴേക്ക് സ്ക്രോൾ ചെയ്യാൻ
         window.addEventListener('load', scrollToBottom);
 
     </script>
