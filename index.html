@@ -190,6 +190,9 @@
             justify-content: center;
             font-size: 18px; /* ബട്ടൺ ടെക്സ്റ്റ്/ഐക്കൺ സൈസ് */
         }
+       . avb{
+           color: #25C3BE;
+       }
     </style>
 </head>
 <body>
@@ -197,7 +200,7 @@
     <div class="app-container">
         <header>
             <img src="logo.jpg" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/40?text=Bot'">
-            <div class="title">A One Music Bot | 10M+ users</div>
+            <div class="title">A One Music Bot™ | 10M+ Users</div>
         </header>
 
         <div class="chat-window" id="chatWindow">
@@ -244,7 +247,15 @@
             "madhuramoorunna": { displayName: "Madhuramoorunna", imageName: "madhuramoorunna.jpg", audioFileName: "madhuramoorunna.mp3"},
             "maine pyar kiya": { displayName: "Maine Pyar Kiya", imageName: "maine.jpg", audioFileName: "maine-pyar-kiya.mp3"},
             "naalo unna parema nantha": { displayName: "Naalo Unna Parema Nantha", imageName: "naalo.jpg", audioFileName: "naalo-unna-parema-nantha.mp3"},
-        };
+            "neeyorikkal": { displayName: "Neeyorikkal", imageName: "neeyorikkal.jpg", audioFileName: "neeyorikkal.mp3"},
+            "oorum blood": { displayName: "Oorum Blood", imageName: "oorum-blood.jpg", audioFileName: "oorum-blood.mp3"},
+            "pemari": { displayName: "Pemari", imageName: "pemari.jpg", audioFileName: "pemari.mp3"},
+            "permaani": { displayName: "Permaani", imageName: "permaani.jpg", audioFileName: "permaani.mp3"},
+            "minnalvala": { displayName: "Minnalvala", imageName: "minnalvala.jpg", audioFileName: "minnalvala.mp3"},
+            "singari": { displayName: "Singari", imageName: "singari.jpg", audioFileName: "singari.mp3"},
+            "thani lokah murakkaari": { displayName: "Thani Lokah Murakkaari", imageName: "thani-lokah-murakkaari.jpg", audioFileName: "thani-lokah-murakkaari.mp3"},
+            
+                };
         
         /**
          * രണ്ട് സ്ട്രിങ്ങുകൾ തമ്മിലുള്ള സാമ്യം (Similarity) കണക്കാക്കുന്നു.
@@ -408,7 +419,7 @@
                 .join('<br>'); // ഓരോ പാട്ടും പുതിയ ലൈനിൽ വരാൻ
             
             // ബോട്ട് മെസ്സേജ് ആയി ലിസ്റ്റ് ചേർക്കുന്നു
-            addMessage(`**Available Songs** (${Object.keys(songData).length} total):<br>${songList}`, 'bot-msg');
+            addMessage(`<h3 class="avb">Available songs </h3> <h4>(${Object.keys(songData).length} total):<br>${songList}`, 'bot-msg');
         }
 
 
