@@ -316,16 +316,15 @@
 
                 // 3. ത്രെഷോൾഡ് ചെക്ക് ചെയ്യുന്നു
                 if (bestMatchSong && highestSimilarity >= SIMILARITY_THRESHOLD) {
-                    // മാച്ച് കണ്ടെത്തിയാൽ
-                    const similarityPercentage = (highestSimilarity * 100).toFixed(0);
-                    addMessage(`✅ Found best match (${similarityPercentage}%): **${bestMatchSong.displayName}**`, 'bot-msg');
+                    // മാച്ച് കണ്ടെത്തിയാൽ: പാട്ടിന്റെ പേര് മാത്രം കാണിക്കുന്നു
+                    addMessage(`${bestMatchSong.displayName}`, 'bot-msg');
                     
                     // സോങ് കാർഡ് അയക്കുന്നു
                     addSongCard(bestMatchSong.displayName, bestMatchSong.imageName, bestMatchSong.audioFileName);
                 } 
-                // മാച്ച് കണ്ടെത്തിയില്ലെങ്കിൽ
+                // മാച്ച് കണ്ടെത്തിയില്ലെങ്കിൽ: സിമിലാരിറ്റി പേഴ്സന്റേജ് ഒഴിവാക്കുന്നു
                 else {
-                    addMessage(`❌ Sorry, the song "${text}" is not found (Similarity: ${(highestSimilarity * 100).toFixed(0)}%). Please try again or click 💾 for the list.`, 'bot-msg');
+                    addMessage(`❌ Sorry, the song "${text}" is not found. Please try again or click 💾 for the list.`, 'bot-msg');
                 }
             }, 600);
         }
