@@ -207,12 +207,12 @@
 
         <div class="chat-window" id="chatWindow">
             <div class="message bot-msg">
-                Check out our Instagram! <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="color: #075e54; text-decoration: none; font-weight: bold;">A One Code official</a>  (Click 📂 to see all available songs)
+                Check out our Instagram! <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="color: #075e54; text-decoration: none; font-weight: bold;">A One Code official</a>  (Click 💾 to see all available songs)
             </div>
             </div>
         
         <div class="input-area">
-            <button id="showSongsBtn" class="send-btn">📂</button> 
+            <button id="showSongsBtn" class="send-btn">💾</button> 
             
             <input type="text" id="userInput" class="input-box" placeholder="Send Song name...">
             <button id="sendBtn" class="send-btn">➤</button>
@@ -325,7 +325,7 @@
                 } 
                 // മാച്ച് കണ്ടെത്തിയില്ലെങ്കിൽ
                 else {
-                    addMessage(`❌ Sorry, the song "${text}" is not found (Similarity: ${(highestSimilarity * 100).toFixed(0)}%). Please try again or click 📂 for the list.`, 'bot-msg');
+                    addMessage(`❌ Sorry, the song "${text}" is not found (Similarity: ${(highestSimilarity * 100).toFixed(0)}%). Please try again or click 💾 for the list.`, 'bot-msg');
                 }
             }, 600);
         }
