@@ -12,21 +12,21 @@
         */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e5ddd5;
+            background-color: #f0f2f5; 
             margin: 0;
             display: flex;
             justify-content: center;
-            /* കീബോർഡ് വരുമ്പോൾ വിൻഡോയുടെ വലുപ്പം മാറുന്നത് തടയാൻ */
             height: 100vh; 
         }
 
         .app-container {
-            width: 100%;
+            /* 🛑 മൊബൈൽ സ്ക്രീനിന് വേണ്ടി വീതി 100vw ആയി സജ്ജീകരിക്കുന്നു */
+            width: 100vw; 
             max-width: 400px;
-            background-color: #fff;
+            background-color: #ffffff; 
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
             height: 100%;
         }
 
@@ -38,7 +38,6 @@
             align-items: center;
             gap: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            /* ഹെഡർ ഫിക്സ് ചെയ്യുന്നു */
             position: sticky; 
             top: 0;
             z-index: 10;
@@ -60,15 +59,13 @@
         .chat-window {
             flex: 1;
             padding: 20px;
-            /* വാട്ട്‌സ്ആപ്പ് ബാക്ക്ഗ്രൗണ്ട് ഇമേജ് */
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-color: #e5ddd5;
+            background-image: none;
+            background-color: #ffffff; 
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 15px;
             scroll-behavior: smooth;
-            /* ഇൻപുട്ട് ഏരിയയ്ക്ക് വേണ്ടി പാഡിംഗ് നൽകുന്നു */
             padding-bottom: 70px; 
         }
 
@@ -88,14 +85,15 @@
         }
 
         .bot-msg {
-            background-color: #fff;
+            background-color: #e5e5e5; 
             align-self: flex-start;
             border-top-left-radius: 0;
             box-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
 
         .user-msg {
-            background-color: #dcf8c6;
+            background-color: #075e54; 
+            color: white;
             align-self: flex-end;
             border-top-right-radius: 0;
             box-shadow: 0 1px 1px rgba(0,0,0,0.1);
@@ -119,6 +117,10 @@
         .song-info {
             font-weight: bold;
             margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .bot-msg .song-info {
             color: #333;
         }
 
@@ -154,12 +156,12 @@
             border: 1px solid #ccc;
         }
 
-        /* ഇൻപുട്ട് ഏരിയയെ അടിയിൽ ഫിക്സ് ചെയ്യുന്നു */
+        /* 🛑 ഇൻപുട്ട് ഏരിയയെ അടിയിൽ ഫിക്സ് ചെയ്യുന്നു - മൊബൈലിന് വേണ്ടി വീതി 100vw ആയി സജ്ജീകരിക്കുന്നു */
         .input-area {
             position: fixed; 
             bottom: 0;
-            width: 100%;
-            max-width: 400px; /* app-container-മായി മാച്ച് ചെയ്യുന്നു */
+            width: 100vw; /* 🛑 ഇവിടെയാണ് പ്രധാന മാറ്റം */
+            max-width: 400px; 
             padding: 10px;
             background-color: #f0f0f0;
             display: flex;
@@ -188,10 +190,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px; /* ബട്ടൺ ടെക്സ്റ്റ്/ഐക്കൺ സൈസ് */
+            font-size: 18px;
         }
        . avb{
-           color: #25C3BE;
+           color: #075e54; 
        }
     </style>
 </head>
@@ -205,9 +207,9 @@
 
         <div class="chat-window" id="chatWindow">
             <div class="message bot-msg">
-                Check out our Instagram! <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="color: #075e54; text-decoration: none; font-weight: bold;">A One Code official</a> Software update  (Click 📂 to see all available songs)
+                Check out our Instagram! <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="color: #075e54; text-decoration: none; font-weight: bold;">A One Code official</a>  (Click 📂 to see all available songs)
             </div>
-        </div>
+            </div>
         
         <div class="input-area">
             <button id="showSongsBtn" class="send-btn">📂</button> 
@@ -278,7 +280,6 @@
             
             return correctChars / maxLen; 
         }
-
 
         // സന്ദേശം അയക്കുന്ന ഫംഗ്ഷൻ
         function sendMessage() {
@@ -364,6 +365,7 @@
          * പ്ലേ/പോസ് ടോഗിൾ ചെയ്യുന്ന ഫംഗ്ഷൻ.
          */
         function toggleMusic(url, btnElement) {
+            
             const newUrl = new URL(url, document.baseURI).href; 
 
             // 1. ഒരേ പാട്ടാണ് പ്ലേ ചെയ്യുന്നതെങ്കിൽ, പോസ് ചെയ്യുന്നു
@@ -430,7 +432,7 @@
 
         // ഇവന്റ് ലിസണറുകൾ
         sendBtn.addEventListener("click", sendMessage);
-        showSongsBtn.addEventListener("click", listAllSongs); // പുതിയ ബട്ടണിനായുള്ള ലിസണർ
+        showSongsBtn.addEventListener("click", listAllSongs); 
 
         userInput.addEventListener("keypress", function (e) {
             if (e.key === "Enter") {
