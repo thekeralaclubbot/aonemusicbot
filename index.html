@@ -3,31 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A One Music Bot | Modern Chat UI</title>
+    <title>A One Music Bot | Neon Chat UI (Light Mode)</title>
     <link rel="icon" href="logo.jpg" type="image/jpeg">
     <style>
         /* ========================================
-        --- MODERN MINIMALIST & ANIMATED STYLES --- 
+        --- NEON GLOW LIGHT MODE STYLES --- 
         ========================================
         */
         :root {
-            /* Minimalist Colors */
-            --primary-accent: #7C3AED;  /* Violet/Purple for actions/user messages */
-            --bot-bg: #F3F4F6;         /* Light Gray for bot messages */
-            --user-bg: var(--primary-accent);
-            --header-bg: #FFFFFF;
-            --chat-bg: #FFFFFF;
-            --text-dark: #1F2937;
-            --text-light: #4B5563;
+            /* Neon Light Mode Colors */
+            --primary-neon: #008080;     /* Dark Cyan Neon for accents/user messages (stands out on light) */
+            --secondary-neon: #800080;   /* Dark Magenta Neon for secondary elements (stands out on light) */
+            --bot-bg: #E0E0E0;           /* Light Gray for bot messages */
+            --user-bg: #00A3A3;          /* Slightly brighter cyan for user messages */
+            --header-bg: #FFFFFF;        /* White header */
+            --chat-bg: #F0F0F0;          /* Very light gray/off-white for chat background */
+            --text-light: #333333;       /* Dark text on light background */
+            --text-dark: #FFFFFF;        /* White text for user messages */
+            --input-bg: #FFFFFF;         /* White input field */
+            --glow-filter: drop-shadow(0 0 5px var(--primary-neon));
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #E5E7EB; /* Very light subtle background */
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background-color: var(--chat-bg); 
             margin: 0;
             display: flex;
             justify-content: center;
             height: 100vh; 
+            
+            /* Background Size 100% / Cover */
+            /* Add your background image path here. Example: */
+            /* background-image: url('your-light-background.jpg'); */ 
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+            background-size: cover; 
+            background-position: center center;
         }
 
         .app-container {
@@ -36,37 +47,41 @@
             background-color: var(--chat-bg); 
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 0 25px rgba(0, 128, 128, 0.1); /* Soft neon box glow for light mode */
             height: 100%;
+            border-left: 1px solid #CCC; /* Lighter border */
+            border-right: 1px solid #CCC; /* Lighter border */
         }
 
         /* --- Header Styling --- */
         header {
             background-color: var(--header-bg);
-            color: var(--text-dark);
+            color: var(--text-light);
             padding: 15px;
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 0 15px rgba(0, 128, 128, 0.2); /* Stronger neon header glow for light mode */
+            border-bottom: 2px solid var(--primary-neon);
             position: sticky; 
             top: 0;
             z-index: 10;
         }
 
         .logo {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             object-fit: cover;
-            background-color: var(--primary-accent);
-            padding: 2px;
+            border: 2px solid var(--secondary-neon);
+            filter: var(--glow-filter);
         }
 
         .title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-dark);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-neon);
+            text-shadow: 0 0 3px rgba(0, 128, 128, 0.7); /* Adjusted text shadow for light mode */
         }
 
         /* --- Chat Window --- */
@@ -77,44 +92,46 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px; /* Reduced gap for sleekness */
+            gap: 12px;
             scroll-behavior: smooth;
             padding-bottom: 70px; 
         }
 
         /* --- Message Styling & Animation --- */
         .message {
-            max-width: 85%; /* Slightly wider messages */
-            padding: 10px 14px;
-            border-radius: 16px; /* Uniformly rounded */
+            max-width: 80%; 
+            padding: 12px 16px;
+            border-radius: 2px;
             font-size: 14px;
-            line-height: 1.5;
-            animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother animation */
+            line-height: 1.6;
+            animation: slideIn 0.3s ease-out; 
         }
 
         @keyframes slideIn {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% { opacity: 0; transform: translateX(20px); }
+            100% { opacity: 1; transform: translateX(0); }
         }
 
         .bot-msg {
             background-color: var(--bot-bg); 
-            color: var(--text-dark);
+            color: var(--text-light);
             align-self: flex-start;
-            border-bottom-left-radius: 4px; 
+            border-left: 3px solid var(--secondary-neon); 
         }
         /* Bot links */
         .bot-msg a {
-            color: var(--primary-accent) !important;
+            color: var(--primary-neon) !important;
             font-weight: 600;
             text-decoration: none;
+            text-shadow: 0 0 1px rgba(0, 128, 128, 0.3); /* Softer link shadow */
         }
 
         .user-msg {
             background-color: var(--user-bg); 
-            color: white;
+            color: var(--text-dark); /* White text on user message background */
             align-self: flex-end;
-            border-bottom-right-radius: 4px;
+            border-right: 3px solid var(--primary-neon);
+            box-shadow: 0 0 8px rgba(0, 163, 163, 0.3); /* User message glow for light mode */
         }
 
         /* --- Song Card Styling --- */
@@ -122,63 +139,75 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 8px;
+            gap: 10px;
             padding: 5px 0 0 0;
+            border: 1px solid var(--secondary-neon);
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(128, 0, 128, 0.2); /* Softer card glow */
+            background-color: #FFF0FF; /* Very light magenta background for card */
         }
 
         .song-cover {
             width: 100%;
-            height: 110px; 
+            height: 120px;
             object-fit: cover;
-            border-radius: 6px;
-            background-color: #E5E7EB;
+            border-radius: 0;
+            border: 1px solid var(--primary-neon);
+            box-shadow: 0 0 8px var(--primary-neon);
         }
 
         .song-info {
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--secondary-neon);
+            text-shadow: 0 0 2px rgba(128, 0, 128, 0.5); /* Softer song info shadow */
         }
         
         /* --- Controls --- */
         .controls {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
             margin-top: 5px;
         }
 
         .btn {
             flex: 1;
-            padding: 8px 10px;
+            padding: 10px 12px;
             border: none;
-            border-radius: 6px; 
+            border-radius: 2px; 
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
-            font-size: 13px;
+            font-size: 14px;
             text-decoration: none;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-        .btn:active {
-            transform: scale(0.98);
+            transition: background-color 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
         }
 
         .play-btn {
-            background-color: var(--primary-accent);
-            color: white;
+            background-color: var(--primary-neon);
+            color: var(--text-dark); /* White text on dark cyan */
+            box-shadow: 0 0 10px var(--primary-neon);
         }
-        .play-btn:hover { background-color: #6D28D9; }
+        .play-btn:hover { 
+            background-color: #00AAAA; /* Slightly lighter cyan on hover */
+            box-shadow: 0 0 15px #00AAAA;
+        }
 
         .download-btn {
-            background-color: #E0E7FF;
-            color: var(--text-dark);
-            border: 1px solid #C4B5FD;
+            background-color: var(--bot-bg); /* Light gray background */
+            color: var(--secondary-neon);
+            border: 1px solid var(--secondary-neon);
+            box-shadow: 0 0 5px rgba(128, 0, 128, 0.3);
         }
-        .download-btn:hover { background-color: #C4B5FD; }
+        .download-btn:hover { 
+            background-color: #EEEEEE; /* Slightly darker light gray on hover */
+            box-shadow: 0 0 10px var(--secondary-neon);
+        }
 
 
         /* --- Input Area Styling --- */
@@ -187,61 +216,85 @@
             bottom: 0;
             width: 100vw;
             max-width: 400px; 
-            padding: 8px 10px;
-            background-color: var(--header-bg);
+            padding: 10px;
+            background-color: var(--header-bg); /* White background */
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); 
+            gap: 10px;
+            box-shadow: 0 0 15px rgba(128, 0, 128, 0.2); /* Bottom shadow glow for light mode */
+            border-top: 2px solid var(--secondary-neon);
             z-index: 10;
         }
 
         .input-box {
             flex: 1;
             padding: 12px 18px;
-            border-radius: 24px; 
-            border: 1px solid #D1D5DB;
+            border-radius: 2px; 
+            border: 1px solid #AAA; /* Lighter border */
             outline: none;
-            font-size: 14px;
-            background-color: #F9FAFB;
-            color: var(--text-dark);
-            transition: border-color 0.2s;
+            font-size: 15px;
+            background-color: var(--input-bg); /* White input background */
+            color: var(--text-light); /* Dark text */
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
         .input-box:focus {
-            border-color: var(--primary-accent);
-            background-color: #FFFFFF;
+            border-color: var(--primary-neon);
+            box-shadow: 0 0 8px rgba(0, 128, 128, 0.4); /* Focus glow */
+            background-color: #F8F8F8; /* Slightly off-white on focus */
         }
 
         .send-btn {
-            background-color: var(--primary-accent);
-            color: white;
+            background-color: var(--primary-neon);
+            color: var(--text-dark); /* White text on cyan */
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: auto;
+            min-width: 65px;
+            height: 45px;
+            border-radius: 4px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            transition: background-color 0.2s, transform 0.1s;
+            font-size: 14px;
+            padding: 0 12px;
+            font-weight: 700;
+            box-shadow: 0 2px 5px rgba(0, 128, 128, 0.3);
+            transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
         }
         .send-btn:active {
-            transform: scale(0.9);
+            transform: scale(0.98);
         }
-        .send-btn:hover { background-color: #6D28D9; }
+        .send-btn:hover { 
+            background-color: #00AAAA;
+            box-shadow: 0 0 10px #00AAAA; 
+        }
         
         .avb-header{
-           color: var(--primary-accent); 
+           color: var(--secondary-neon); 
            margin: 0;
            font-weight: 700;
-           font-size: 15px;
+           font-size: 16px;
+           text-shadow: 0 0 2px rgba(128, 0, 128, 0.5); /* Softer header shadow */
         }
         .avb-list-p {
             margin-top: 5px;
             font-weight: 500;
-            color: var(--text-dark);
-            line-height: 1.7;
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 13px;
+        }
+        
+        /* Specific Button for Listing Songs (Kept Square for Icon) */
+        #showSongsBtn {
+            background-color: #6A0DAD; /* Darker Violet for light mode */
+            box-shadow: 0 2px 5px #6A0DAD;
+            width: 45px;
+            padding: 0;
+            color: var(--text-dark); /* White icon */
+        }
+        #showSongsBtn:hover {
+            background-color: #8A2BE2; /* Slightly brighter violet on hover */
+            box-shadow: 0 0 10px #8A2BE2;
         }
     </style>
 </head>
@@ -249,30 +302,30 @@
 
     <div class="app-container">
         <header>
-            <img src="logo.jpg" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/36?text=M'">
-            <div class="title">A One Music Bot</div>
+            <img src="logo.jpg" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/38?text=BOT'">
+            <div class="title">A ONE MUSIC BOT</div>
         </header>
 
         <div class="chat-window" id="chatWindow">
             <div class="message bot-msg">
-                👋 Welcome! I'm the A One Music Bot. Search for a song by typing its name, or click the **💾** button for a list of available tracks.
+                <span style="color: var(--secondary-neon);">[SYSTEM MESSAGE]</span>  Search query access permitted. Type song name or use the data icon "📂".
             </div>
             <div class="message bot-msg">
-                Follow us on Instagram: <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank" style="text-decoration: none;">A One Code official</a>.  
+                Follow us on Instagram: <a href="https://www.instagram.com/a.one.code.official?igsh=MTl5Zm9heGo4dW9ndA==" target="_blank">A One Code official</a>.  
             </div>
         </div>
         
         <div class="input-area">
-            <button id="showSongsBtn" class="send-btn" style="background-color: #6B7280;">💾</button> 
+            <button id="showSongsBtn" class="send-btn">💾</button> 
             
-            <input type="text" id="userInput" class="input-box" placeholder="Send Song name...">
-            <button id="sendBtn" class="send-btn">➤</button>
+            <input type="text" id="userInput" class="input-box" placeholder="Access database with track name...">
+            <button id="sendBtn" class="send-btn">SEND</button>
         </div>
     </div>
 
     <script>
         /* ========================================
-        --- JAVASCRIPT LOGIC --- 
+        --- JAVASCRIPT LOGIC (Unchanged) --- 
         ========================================
         */
         const userInput = document.getElementById("userInput");
@@ -305,7 +358,7 @@
             "pemari": { displayName: "Pemari", imageName: "pemari.jpg", audioFileName: "pemari.mp3"},
             "permaani": { displayName: "Permaani", imageName: "permaani.jpg", audioFileName: "permaani.mp3"},
             "minnalvala": { displayName: "Minnalvala", imageName: "minnalvala.jpg", audioFileName: "minnalvala.mp3"},
-            "singari": { displayName: "Singari", imageName: "singari.jpg", audioFileName: "singari.mp3"},
+            "singari": { displayName: "Singari", imageName: "singari.jpg", audioFileName: "singari.jpg"},
             "thani lokah murakkaari": { displayName: "Thani Lokah Murakkaari", imageName: "thani-lokah-murakkaari.jpg", audioFileName: "thani-lokah-murakkaari.mp3"},
             
                 };
@@ -343,8 +396,15 @@
             
             userInput.value = "";
 
-            // 2. Bot Logic after a small delay
+            // 2. Add Fake Loading Message and store reference
+            const processingMessage = addMessage(`🤖 [PROCESSING] Searching for "${text}"...`, 'bot-msg');
+
+            // 3. Bot Logic after a small delay (1.2 seconds)
             setTimeout(() => {
+                
+                // 4. Remove the loading message before showing the result
+                processingMessage.remove(); 
+                
                 const lowerText = text.toLowerCase();
                 
                 let bestMatchSong = null;
@@ -362,17 +422,17 @@
                     }
                 }
 
-                // 3. Check threshold
+                // 5. Check threshold and display final result
                 if (bestMatchSong && highestSimilarity >= SIMILARITY_THRESHOLD) {
-                    addMessage(`I found a match for your song: ${bestMatchSong.displayName}`, 'bot-msg');
+                    addMessage(`[BOT] Found match: **${bestMatchSong.displayName}**. Loading media interface...`, 'bot-msg');
                     
                     // Send Song Card
                     addSongCard(bestMatchSong.displayName, bestMatchSong.imageName, bestMatchSong.audioFileName);
                 } 
                 else {
-                    addMessage(`❌ Sorry, the song "${text}" is not found. Please try again or click 💾 for the list.`, 'bot-msg');
+                    addMessage(`❌ [ERROR] Query "${text}" not found in database. Try a different keyword.`, 'bot-msg');
                 }
-            }, 600);
+            }, 1200); 
         }
 
         // Function to add a text message
@@ -382,6 +442,7 @@
             div.innerHTML = text; 
             chatWindow.appendChild(div);
             scrollToBottom();
+            return div; // Return the created element so it can be removed later
         }
         
         // Function to add a Song Card
@@ -393,11 +454,11 @@
 
             div.innerHTML = `
                 <div class="song-card">
-                    <img src="${imageName}" class="song-cover" onerror="this.src='https://via.placeholder.com/200x110/D1D5DB/1F2937?text=No+Image'">
-                    <div class="song-info">🎵 ${displayName}</div>
+                    <img src="${imageName}" class="song-cover" onerror="this.src='https://via.placeholder.com/200x120/F0F0F0/800080?text=MEDIA+NOT+FOUND'">
+                    <div class="song-info">💿 ${displayName}</div>
                     <div class="controls">
-                        <button class="btn play-btn" onclick="toggleMusic('${songUrl}', this)">▶ Play</button>
-                        <a href="${songUrl}" download="${displayName.replace(/\s/g, '_')}.mp3" class="btn download-btn">⬇️ Download</a>
+                        <button class="btn play-btn" onclick="toggleMusic('${songUrl}', this)">▶ PLAY</button>
+                        <a href="${songUrl}" download="${displayName.replace(/\s/g, '_')}.mp3" class="btn download-btn">⬇️ DOWNLOAD</a>
                     </div>
                 </div>
             `;
@@ -420,7 +481,7 @@
 
             if (isSameSongPlaying) {
                 currentAudio.pause();
-                btnElement.innerHTML = "▶ Play";
+                btnElement.innerHTML = "▶ PLAY";
                 return;
             }
 
@@ -432,7 +493,7 @@
             
             // 3. Reset the text of the previously active button
             if (currentBtn && currentBtn !== btnElement) {
-                currentBtn.innerHTML = "▶ Play";
+                currentBtn.innerHTML = "▶ PLAY";
             }
 
             // 4. Play new audio
@@ -441,19 +502,19 @@
 
             currentAudio.play()
                 .then(() => {
-                    btnElement.innerHTML = "⏸ Pause"; 
+                    btnElement.innerHTML = "⏸ PAUSE"; 
                 })
                 .catch(error => {
                     console.error("Playback failed for:", url, error);
                     alert(`Error: Cannot play "${url}". Make sure the file exists.`);
-                    btnElement.innerHTML = "▶ Play";
+                    btnElement.innerHTML = "▶ PLAY";
                     currentAudio = null;
                     currentBtn = null;
                 });
 
             // 5. Reset button when song ends
             currentAudio.onended = function() {
-                btnElement.innerHTML = "▶ Play";
+                btnElement.innerHTML = "▶ PLAY";
                 currentAudio = null;
                 currentBtn = null;
             };
@@ -461,12 +522,11 @@
 
         // Function to list Available Songs
         function listAllSongs() {
-            // NOTE: Removed "**" from this list as requested
             const songList = Object.keys(songData)
-                .map((key, index) => `${index + 1}. ${songData[key].displayName} (Keywords: ${key})`)
+                .map((key, index) => `${index + 1}. ${songData[key].displayName} <span style="color: var(--secondary-neon);"> (Keywords: ${key})</span>`)
                 .join('<br>'); 
             
-            addMessage(`<div class="avb-header">Available Songs</div> <p class="avb-list-p">(${Object.keys(songData).length} total):<br><br>${songList}</p>`, 'bot-msg');
+            addMessage(`<div class="avb-header">ACCESSING DATABANK (${Object.keys(songData).length} TRACKS FOUND)</div> <p class="avb-list-p">${songList}</p>`, 'bot-msg');
         }
 
 
